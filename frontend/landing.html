@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网页PPT生成 - 一键生成专业演示文稿</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* ========== Reset & Base ========== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary-start: #667eea;
+      --primary-end: #764ba2;
+      --accent: #ff6b6b;
+      --accent-hover: #ff5252;
+      --bg-light: #f8f9ff;
+      --bg-white: #ffffff;
+      --text-dark: #2d3748;
+      --text-gray: #718096;
+      --text-light: #a0aec0;
+      --shadow-sm: 0 2px 8px rgba(102, 126, 234, 0.1);
+      --shadow-md: 0 8px 30px rgba(102, 126, 234, 0.15);
+      --shadow-lg: 0 20px 60px rgba(102, 126, 234, 0.2);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-dark);
+      background: var(--bg-light);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ========== Animations ========== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(2deg); }
+      50% { transform: translateY(-15px) rotate(-1deg); }
+    }
+
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(1deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes slideInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .animate-on-scroll.visible:nth-child(2) { transition-delay: 0.1s; }
+    .animate-on-scroll.visible:nth-child(3) { transition-delay: 0.2s; }
+    .animate-on-scroll.visible:nth-child(4) { transition-delay: 0.3s; }
+
+    /* ========== Navigation ========== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(102, 126, 234, 0.08);
+      transition: var(--transition);
+    }
+
+    .navbar.scrolled {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--text-dark);
+    }
+
+    .nav-logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .nav-logo span {
+      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-gray);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+      border-radius: 1px;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text-dark);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 24px;
+      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+      color: white !important;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .nav-cta::after {
+      display: none !important;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(102, 126, 234, 0.45);
+    }
+
+    /* Mobile menu */
+    .mobile-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      z-index: 1001;
+    }
+
+    .mobile-toggle span {
+      display: block;
+      width: 24px;
+      height: 2.5px;
+      background: var(--text-dark);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    .mobile-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .mobile-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .mobile-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* ========== Hero Section ========== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(170deg, #f0f3ff 0%, #f8f0ff 50%, #fff5f5 100%);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(102, 126, 234, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -150px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(118, 75, 162, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: pulse 8s ease-in-out infinite reverse;
+    }
+
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content {
+      animation: fadeInLeft 1s ease forwards;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: rgba(102, 126, 234, 0.1);
+      border: 1px solid rgba(102, 126, 234, 0.15);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--primary-start);
+      margin-bottom: 28px;
+    }
+
+    .hero-badge-dot {
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .hero-title {
+      font-size: 3.2rem;
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      color: var(--text-dark);
+    }
+
+    .hero-title .gradient-text {
+      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-gray);
+      line-height: 1.8;
+      margin-bottom: 40px;
+      max-width: 520px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 8px 30px rgba(255, 107, 107, 0.35);
+      font-family: inherit;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(255, 107, 107, 0.5);
+    }
+
+    .btn-primary:active {
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 32px;
+      background: white;
+      color: var(--text-dark);
+      border: 2px solid rgba(102, 126, 234, 0.15);
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary-start);
+      color: var(--primary-start);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .hero-stat {
+      text-align: left;
+    }
+
+    .hero-stat-number {
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-stat-label {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-top: 2px;
+    }
+
+    /* Hero Visual - CSS PPT Preview */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeInRight 1s ease 0.3s forwards;
+      opacity: 0;
+    }
+
+    .slide-preview {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .slide-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: float 6s ease-in-out infinite;
+      position: relative;
+    }
+
+    .slide-card-header {
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary-start), var(--primary-end), var(--accent));
+    }
+
+    .slide-card-body {
+      padding: 36px 32px;
+    }
+
+    .slide-card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+    }
+
+    .slide-card-line {
+      height: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    .slide-card-line:nth-child(2) {
+      width: 100%;
+      background: linear-gradient(90deg, #e2e8f0, #edf2f7);
+    }
+
+    .slide-card-line:nth-child(3) {
+      width: 85%;
+      background: linear-gradient(90deg, #e2e8f0, #edf2f7);
+    }
+
+    .slide-card-line:nth-child(4) {
+      width: 70%;
+      background: linear-gradient(90deg, #e2e8f0, #edf2f7);
+    }
+
+    .slide-card-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+      height: 100px;
+      padding: 0 8px;
+    }
+
+    .slide-card-bar {
+      flex: 1;
+      border-radius: 6px 6px 0 0;
+      transition: var(--transition);
+    }
+
+    .slide-card-bar:nth-child(1) {
+      height: 45%;
+      background: linear-gradient(180deg, var(--primary-start), rgba(102, 126, 234, 0.6));
+    }
+
+    .slide-card-bar:nth-child(2) {
+      height: 70%;
+      background: linear-gradient(180deg, var(--primary-end), rgba(118, 75, 162, 0.6));
+    }
+
+    .slide-card-bar:nth-child(3) {
+      height: 55%;
+      background: linear-gradient(180deg, var(--accent), rgba(255, 107, 107, 0.6));
+    }
+
+    .slide-card-bar:nth-child(4) {
+      height: 85%;
+      background: linear-gradient(180deg, var(--primary-start), rgba(102, 126, 234, 0.6));
+    }
+
+    .slide-card-bar:nth-child(5) {
+      height: 65%;
+      background: linear-gradient(180deg, var(--primary-end), rgba(118, 75, 162, 0.6));
+    }
+
+    /* Floating decorative elements */
+    .slide-float-card {
+      position: absolute;
+      background: white;
+      border-radius: 12px;
+      padding: 14px 18px;
+      box-shadow: var(--shadow-md);
+      animation: floatSlow 5s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .slide-float-card.top-right {
+      top: -20px;
+      right: -30px;
+      animation-delay: 1s;
+    }
+
+    .slide-float-card.bottom-left {
+      bottom: -15px;
+      left: -20px;
+      animation-delay: 2s;
+    }
+
+    .float-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .float-icon.purple {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+    }
+
+    .float-icon.orange {
+      background: rgba(255, 107, 107, 0.12);
+    }
+
+    /* ========== Section Common ========== */
+    .section {
+      padding: 100px 24px;
+    }
+
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: rgba(102, 126, 234, 0.08);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-start);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .section-desc {
+      font-size: 1.1rem;
+      color: var(--text-gray);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ========== Features Section ========== */
+    .features {
+      background: white;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
+    }
+
+    .feature-card {
+      padding: 36px 28px;
+      background: var(--bg-light);
+      border-radius: var(--radius);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid transparent;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
+      transform: scaleX(0);
+      transition: var(--transition);
+      transform-origin: left;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(102, 126, 234, 0.1);
+      background: white;
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon.icon-1 {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.12));
+    }
+
+    .feature-icon.icon-2 {
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 154, 100, 0.1));
+    }
+
+    .feature-icon.icon-3 {
+      background: linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(102, 201, 167, 0.1));
+    }
+
+    .feature-icon.icon-4 {
+      background: linear-gradient(135deg, rgba(237, 187, 52, 0.1), rgba(255, 154, 100, 0.1));
+    }
+
+    .feature-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    .feature-desc {
+      font-size: 0.92rem;
+      color: var(--text-gray);
+      line-height: 1.7;
+    }
+
+    /* ========== Steps Section ========== */
+    .steps {
+      background: linear-gradient(170deg, #f0f3ff 0%, #f8f0ff 100%);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      position: relative;
+    }
+
+    .steps-grid::before {
+      content: '';
+      position: absolute;
+      top: 60px;
+      left: 16.66%;
+      right: 16.66%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-start), var(--primary-end), var(--accent));
+      border-radius: 2px;
+      z-index: 0;
+    }
+
+    .step-card {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-number {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 1.6rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+      color: white;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      transition: var(--transition);
+    }
+
+    .step-card:hover .step-number {
+      transform: scale(1.1);
+      box-shadow: 0 12px 35px rgba(102, 126, 234, 0.45);
+    }
+
+    .step-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+
+    .step-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-dark);
+    }
+
+    .step-desc {
+      font-size: 0.92rem;
+      color: var(--text-gray);
+      max-width: 280px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ========== Showcase Section ========== */
+    .showcase {
+      background: white;
+    }
+
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .showcase-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .showcase-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .showcase-preview {
+      height: 220px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .showcase-preview.tech {
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    }
+
+    .showcase-preview.chinese {
+      background: linear-gradient(135deg, #c0392b, #e74c3c, #f39c12);
+    }
+
+    .showcase-preview.minimal {
+      background: linear-gradient(135deg, #2c3e50, #3498db);
+    }
+
+    /* CSS slide mockup inside showcase */
+    .showcase-slide {
+      width: 70%;
+      height: 65%;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .showcase-slide-bar {
+      height: 6px;
+      border-radius: 3px;
+      margin-bottom: 8px;
+    }
+
+    .showcase-slide-bar.title {
+      width: 60%;
+      margin-bottom: 12px;
+    }
+
+    .showcase-slide-bar.line {
+      width: 90%;
+    }
+
+    .showcase-slide-bar.line-short {
+      width: 65%;
+    }
+
+    .tech .showcase-slide-bar {
+      background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+
+    .chinese .showcase-slide-bar {
+      background: linear-gradient(90deg, #c0392b, #e74c3c);
+    }
+
+    .minimal .showcase-slide-bar {
+      background: linear-gradient(90deg, #2c3e50, #3498db);
+    }
+
+    .showcase-info {
+      padding: 24px;
+    }
+
+    .showcase-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+    }
+
+    .showcase-desc {
+      font-size: 0.88rem;
+      color: var(--text-gray);
+      line-height: 1.6;
+    }
+
+    .showcase-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(102, 126, 234, 0.08);
+      color: var(--primary-start);
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    /* ========== CTA Section ========== */
+    .cta-section {
+      padding: 100px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+      background-size: 200% 200%;
+      animation: gradientShift 8s ease infinite;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+    }
+
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta-title {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .cta-desc {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 44px;
+      background: white;
+      color: var(--primary-start);
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      font-family: inherit;
+    }
+
+    .btn-cta:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    /* ========== Footer ========== */
+    .footer {
+      background: var(--text-dark);
+      color: rgba(255, 255, 255, 0.6);
+      padding: 48px 24px;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-copy {
+      font-size: 0.88rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.88rem;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    /* ========== Responsive ========== */
+    @media (max-width: 1024px) {
+      .hero-title {
+        font-size: 2.6rem;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero-visual {
+        display: none;
+      }
+
+      .hero-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-subtitle {
+        margin: 0 auto 40px;
+      }
+
+      .hero-actions {
+        justify-content: center;
+      }
+
+      .hero-stats {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        padding: 100px 32px 40px;
+        gap: 24px;
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+        transition: var(--transition);
+      }
+
+      .nav-links.open {
+        right: 0;
+      }
+
+      .mobile-toggle {
+        display: flex;
+      }
+
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .steps-grid::before {
+        display: none;
+      }
+
+      .showcase-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-title {
+        font-size: 1.8rem;
+      }
+
+      .hero-stats {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .hero-stat {
+        text-align: center;
+      }
+
+      .footer-container {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero {
+        padding: 100px 16px 60px;
+      }
+
+      .hero-title {
+        font-size: 1.7rem;
+      }
+
+      .btn-primary {
+        padding: 14px 28px;
+        font-size: 0.95rem;
+      }
+
+      .section {
+        padding: 70px 16px;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== Navigation ========== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-icon">PP</div>
+        <span>网页PPT生成</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#features" class="nav-link">功能介绍</a></li>
+        <li><a href="#showcase" class="nav-link">使用案例</a></li>
+        <li><a href="#about" class="nav-link">关于我们</a></li>
+        <li><a href="/app" class="nav-cta">免费使用 &rarr;</a></li>
+      </ul>
+      <div class="mobile-toggle" id="mobileToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== Hero Section ========== -->
+  <section class="hero" id="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          AI 驱动的演示文稿工具
+        </div>
+        <h1 class="hero-title">
+          一键生成<br><span class="gradient-text">专业演示文稿</span>
+        </h1>
+        <p class="hero-subtitle">
+          告别繁琐排版，AI 帮你打造精美 PPT。支持多种风格模板，富文本编辑，实时预览。
+        </p>
+        <div class="hero-actions">
+          <a href="/app" class="btn-primary">立即免费使用 &rarr;</a>
+          <a href="#features" class="btn-secondary">了解更多</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-number">10+</div>
+            <div class="hero-stat-label">精选模板</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-number">1000+</div>
+            <div class="hero-stat-label">用户信赖</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-number">5s</div>
+            <div class="hero-stat-label">极速生成</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="slide-preview">
+          <div class="slide-card">
+            <div class="slide-card-header"></div>
+            <div class="slide-card-body">
+              <div class="slide-card-title">Q4 季度报告</div>
+              <div class="slide-card-line"></div>
+              <div class="slide-card-line"></div>
+              <div class="slide-card-line"></div>
+              <div class="slide-card-chart">
+                <div class="slide-card-bar"></div>
+                <div class="slide-card-bar"></div>
+                <div class="slide-card-bar"></div>
+                <div class="slide-card-bar"></div>
+                <div class="slide-card-bar"></div>
+              </div>
+            </div>
+          </div>
+          <div class="slide-float-card top-right">
+            <div class="float-icon purple">&#9998;</div>
+            <span>编辑中...</span>
+          </div>
+          <div class="slide-float-card bottom-left">
+            <div class="float-icon orange">&#10003;</div>
+            <span>已生成</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Features Section ========== -->
+  <section class="section features" id="features">
+    <div class="section-container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-tag">&#10024; 核心功能</div>
+        <h2 class="section-title">强大功能，简单易用</h2>
+        <p class="section-desc">我们提供一站式演示文稿解决方案，让每一页幻灯片都专业出彩。</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card animate-on-scroll">
+          <div class="feature-icon icon-1">&#127912;</div>
+          <h3 class="feature-title">多种风格模板</h3>
+          <p class="feature-desc">科技风、中式风、极简风等精选模板，覆盖商务汇报、教学课件、产品发布等场景。</p>
+        </div>
+        <div class="feature-card animate-on-scroll">
+          <div class="feature-icon icon-2">&#9999;&#65039;</div>
+          <h3 class="feature-title">富文本编辑</h3>
+          <p class="feature-desc">支持加粗、斜体、字号调整、颜色自定义等丰富排版功能，轻松打造个性化内容。</p>
+        </div>
+        <div class="feature-card animate-on-scroll">
+          <div class="feature-icon icon-3">&#128241;</div>
+          <h3 class="feature-title">实时预览</h3>
+          <p class="feature-desc">所见即所得的编辑体验，支持全屏预览模式，随时查看最终呈现效果。</p>
+        </div>
+        <div class="feature-card animate-on-scroll">
+          <div class="feature-icon icon-4">&#9889;</div>
+          <h3 class="feature-title">一键生成</h3>
+          <p class="feature-desc">输入主题内容，AI 智能排版，秒级生成完整演示文稿，效率提升 10 倍。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Steps Section ========== -->
+  <section class="section steps" id="steps">
+    <div class="section-container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-tag">&#128640; 使用流程</div>
+        <h2 class="section-title">三步搞定专业 PPT</h2>
+        <p class="section-desc">无需设计经验，简单三步即可生成精美演示文稿。</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card animate-on-scroll">
+          <div class="step-number">1</div>
+          <div class="step-icon">&#127912;</div>
+          <h3 class="step-title">选择风格模板</h3>
+          <p class="step-desc">浏览精选模板库，选择最适合你场景的风格模板。</p>
+        </div>
+        <div class="step-card animate-on-scroll">
+          <div class="step-number">2</div>
+          <div class="step-icon">&#9999;&#65039;</div>
+          <h3 class="step-title">编辑内容</h3>
+          <p class="step-desc">使用富文本编辑器，自由添加和排版你的内容。</p>
+        </div>
+        <div class="step-card animate-on-scroll">
+          <div class="step-number">3</div>
+          <div class="step-icon">&#128230;</div>
+          <h3 class="step-title">生成并导出</h3>
+          <p class="step-desc">一键生成演示文稿，支持在线预览和导出下载。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Showcase Section ========== -->
+  <section class="section showcase" id="showcase">
+    <div class="section-container">
+      <div class="section-header animate-on-scroll">
+        <div class="section-tag">&#128142; 使用案例</div>
+        <h2 class="section-title">精选风格展示</h2>
+        <p class="section-desc">多种风格模板，满足不同场景需求，总有一款适合你。</p>
+      </div>
+      <div class="showcase-grid">
+        <div class="showcase-card animate-on-scroll">
+          <div class="showcase-preview tech">
+            <div class="showcase-slide">
+              <div class="showcase-slide-bar title"></div>
+              <div class="showcase-slide-bar line"></div>
+              <div class="showcase-slide-bar line-short"></div>
+            </div>
+          </div>
+          <div class="showcase-info">
+            <h3 class="showcase-name">科技蓝风格</h3>
+            <p class="showcase-desc">深色渐变背景搭配紫色强调，适合科技发布会、产品路演等场景。</p>
+            <span class="showcase-tag">热门推荐</span>
+          </div>
+        </div>
+        <div class="showcase-card animate-on-scroll">
+          <div class="showcase-preview chinese">
+            <div class="showcase-slide">
+              <div class="showcase-slide-bar title"></div>
+              <div class="showcase-slide-bar line"></div>
+              <div class="showcase-slide-bar line-short"></div>
+            </div>
+          </div>
+          <div class="showcase-info">
+            <h3 class="showcase-name">中国红风格</h3>
+            <p class="showcase-desc">经典中国红配色，融合传统文化元素，适合年会、庆典等正式场合。</p>
+            <span class="showcase-tag">经典风格</span>
+          </div>
+        </div>
+        <div class="showcase-card animate-on-scroll">
+          <div class="showcase-preview minimal">
+            <div class="showcase-slide">
+              <div class="showcase-slide-bar title"></div>
+              <div class="showcase-slide-bar line"></div>
+              <div class="showcase-slide-bar line-short"></div>
+            </div>
+          </div>
+          <div class="showcase-info">
+            <h3 class="showcase-name">极简商务风</h3>
+            <p class="showcase-desc">简洁大方的蓝灰配色，突出内容本身，适合商务汇报和工作总结。</p>
+            <span class="showcase-tag">商务首选</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA Section ========== -->
+  <section class="cta-section" id="about">
+    <div class="cta-content animate-on-scroll">
+      <h2 class="cta-title">准备好开始了吗？</h2>
+      <p class="cta-desc">立即体验网页PPT生成，让 AI 助你打造专业演示文稿。免费使用，无需注册。</p>
+      <a href="/app" class="btn-cta">立即免费使用 &rarr;</a>
+    </div>
+  </section>
+
+  <!-- ========== Footer ========== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-copy">&copy; 2026 背景物融通信息技术有限公司</div>
+      <ul class="footer-links">
+        <li><a href="#">隐私政策</a></li>
+        <li><a href="#">使用条款</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- ========== JavaScript ========== -->
+  <script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Mobile menu toggle
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    mobileToggle.addEventListener('click', () => {
+      mobileToggle.classList.toggle('active');
+      navLinks.classList.toggle('open');
+    });
+
+    // Close mobile menu on link click
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileToggle.classList.remove('active');
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // Scroll animation (Intersection Observer)
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Active nav link highlighting
+    const sections = document.querySelectorAll('section[id]');
+    const navLinkElements = document.querySelectorAll('.nav-link');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if (window.scrollY >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinkElements.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

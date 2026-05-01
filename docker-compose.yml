@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  slide-platform:
+    build: .
+    container_name: slide-platform
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./output:/app/output
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped

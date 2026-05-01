@@ -1,0 +1,31 @@
+{
+  "id": "keji",
+  "name": "科技",
+  "name_en": "KeJi",
+  "description": "科技风、现代化、专业、数据驱动",
+  "category": "specialty",
+  "theme": "light",
+  "fonts": {
+    "display": "Noto Sans SC",
+    "body": "Noto Sans SC",
+    "display_weight": "700",
+    "body_weight": "400",
+    "google_url": "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap"
+  },
+  "colors": {
+    "bg_primary": "#ffffff",
+    "bg_secondary": "#f5f7fa",
+    "bg_dark": "#0a1628",
+    "text_primary": "#1a1a1a",
+    "text_secondary": "#555555",
+    "accent_primary": "#1D50A2",
+    "accent_secondary": "#3a7bd5",
+    "accent_highlight": "#f0c040"
+  },
+  "features": {
+    "particle_background": true,
+    "gradient_blocks": true,
+    "geometric_lines": true,
+    "grid_texture": true
+  }
+}

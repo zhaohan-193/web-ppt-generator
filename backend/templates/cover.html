@@ -1,0 +1,52 @@
+{# 封面页模板 - 科技商务风格，含渐变背景、装饰元素、粒子动画 #}
+{% macro cover_slide(title, subtitle, style) %}
+<div class="slide slide-cover active">
+  <!-- 背景装饰层 -->
+  <div class="cover-bg-layer">
+    <div class="cover-glow cover-glow-1"></div>
+    <div class="cover-glow cover-glow-2"></div>
+    <div class="cover-grid-lines"></div>
+    <div class="cover-dots"></div>
+  </div>
+
+  <!-- 内容层 -->
+  <div class="cover-content-layer">
+    <div class="reveal">
+      <h1 class="cover-title">{{ title }}</h1>
+    </div>
+    <div class="reveal">
+      <div class="cover-divider">
+        <div class="cover-divider-line"></div>
+        <div class="cover-divider-diamond"></div>
+        <div class="cover-divider-line"></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <p class="cover-subtitle">{{ subtitle }}</p>
+    </div>
+    <div class="reveal">
+      <div class="cover-footer-info">
+        <div class="cover-tag">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="cover-date"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧装饰球体 -->
+  <div class="cover-orb-container reveal">
+    <div class="cover-orb cover-orb-1"></div>
+    <div class="cover-orb cover-orb-2"></div>
+    <div class="cover-orb-ring"></div>
+  </div>
+
+  <!-- 底部装饰 -->
+  <div class="cover-bottom-deco reveal">
+    <div class="cover-bottom-line"></div>
+    <div class="cover-bottom-dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</div>
+{% endmacro %}

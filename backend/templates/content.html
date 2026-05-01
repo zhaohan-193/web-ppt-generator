@@ -1,0 +1,118 @@
+{# 内容页模板 - 科技商务风格，含图标卡片、渐变、投影、背景装饰 #}
+{% macro content_slide(heading, subheading, points, layout) %}
+<div class="slide slide-content-page">
+  <!-- 背景装饰 -->
+  <div class="content-bg-layer">
+    <div class="content-glow"></div>
+    <div class="content-grid"></div>
+  </div>
+
+  <!-- 内容区 -->
+  <div class="content-main">
+    {% if heading %}
+    <div class="reveal">
+      <div class="content-header">
+        <div class="content-header-bar"></div>
+        <h2 class="content-title">{{ heading }}</h2>
+      </div>
+    </div>
+    {% endif %}
+    {% if subheading %}
+    <div class="reveal">
+      <p class="content-subtitle">{{ subheading }}</p>
+    </div>
+    {% endif %}
+
+    {% if points and points|length > 0 %}
+    {% if layout == 'horizontal' %}
+    {# 水平卡片网格 #}
+    <div class="reveal">
+      <div class="card-grid card-grid-h">
+        {% for point in points %}
+        <div class="icon-card">
+          <div class="icon-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              {% if loop.index0 % 4 == 0 %}
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+              {% elif loop.index0 % 4 == 1 %}
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+              {% elif loop.index0 % 4 == 2 %}
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+              {% else %}
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              {% endif %}
+            </svg>
+          </div>
+          {% if point.title %}
+          <div class="icon-card-title">{{ point.title }}</div>
+          {% endif %}
+          <div class="icon-card-text">{{ point.text if point.text else point }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% elif layout == 'vertical' %}
+    {# 垂直卡片列表 #}
+    <div class="reveal">
+      <div class="card-stack">
+        {% for point in points %}
+        <div class="feature-card">
+          <div class="feature-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              {% if loop.index0 % 3 == 0 %}
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              {% elif loop.index0 % 3 == 1 %}
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/>
+              {% else %}
+              <circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/>
+              {% endif %}
+            </svg>
+          </div>
+          <div class="feature-card-body">
+            {% if point.title %}
+            <div class="feature-card-title">{{ point.title }}</div>
+            {% endif %}
+            <div class="feature-card-text">{{ point.text if point.text else point }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    {# 默认：≤3条一行均分，>3条两行均分 #}
+    {% set cols_class = 'cols-' ~ (points|length if points|length <= 6 else 6) %}
+    <div class="reveal">
+      <div class="card-grid card-grid-auto {{ cols_class }}">
+        {% for point in points %}
+        <div class="icon-card">
+          <div class="icon-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              {% if loop.index0 % 6 == 0 %}
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+              {% elif loop.index0 % 6 == 1 %}
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+              {% elif loop.index0 % 6 == 2 %}
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+              {% elif loop.index0 % 6 == 3 %}
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              {% elif loop.index0 % 6 == 4 %}
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              {% else %}
+              <circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/>
+              {% endif %}
+            </svg>
+          </div>
+          <div class="icon-card-text">{{ point if point is string else point.text }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% endif %}
+  </div>
+
+  <!-- 角落装饰 -->
+  <div class="corner-deco corner-deco-tr"></div>
+  <div class="corner-deco corner-deco-bl"></div>
+</div>
+{% endmacro %}

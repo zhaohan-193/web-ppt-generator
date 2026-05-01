@@ -1,0 +1,35 @@
+{
+  "id": "zhongshi",
+  "name": "中式",
+  "name_en": "ZhongShi",
+  "description": "传统中式风格，水墨韵味，红金配色，古朴庄重",
+  "category": "traditional",
+  "theme": "light",
+  "fonts": {
+    "display": "Noto Serif SC",
+    "body": "Noto Sans SC",
+    "display_weight": "700",
+    "body_weight": "400",
+    "google_url": "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+  },
+  "colors": {
+    "bg_primary": "#F5F5F0",
+    "bg_secondary": "#EDEDE6",
+    "bg_dark": "#1A1A1A",
+    "text_primary": "#1A1A1A",
+    "text_secondary": "#555555",
+    "accent_primary": "#C41E3A",
+    "accent_secondary": "#D4AF37",
+    "accent_tertiary": "#1E3A5F"
+  },
+  "features": {
+    "ink_wash": true,
+    "traditional_patterns": true,
+    "red_gold_theme": true,
+    "symmetry_layout": true,
+    "gradient_blocks": true,
+    "particle_background": true,
+    "paper_texture": true,
+    "seal_stamp": true
+  }
+}
